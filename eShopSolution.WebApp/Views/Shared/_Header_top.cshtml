@@ -1,0 +1,61 @@
+﻿
+@using eShopSolution.ViewModel.Language
+@{
+
+    var languages = (List<LanguageViewModel>)ViewData["languages"];
+
+}
+
+<div class="header__top">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-7 col-sm-12 col-xs-12 ">
+                <p>HCMC National University Dormitory Zone B - Hotline: +84 968540302</p>
+            </div>
+            <div class="col-lg-6 col-md-5 col-sm-12 col-xs-12 ">
+                @{
+                    if (ViewBag.IsLogged == true)
+                    {
+                        <a class="ps-img-user-btn" href="#">
+                            <img height="30" width="30" class="img-user" src="@ViewBag.ImagePath" />
+                        </a>
+                        <div class="btn-group ps-dropdown">
+                            <a class="dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@ViewBag.UserName<i class="fa fa-angle-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a asp-action="Profile" asp-controller="user">Profile</a></li>
+                                <li><a asp-action="changePassword" asp-controller="user" >Change Password</a></li>
+                                <li><a href="/login/logout">Logout</a></li>
+
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="btn-group ps-dropdown last-element">
+                            <a class="dropdown-toggle" href="/login/register">Register</a>
+                        </div>
+                        <div class="btn-group ps-dropdown">
+                            <a class="dropdown-toggle" href="/login/index">Login</a>
+                        </div>
+                    }
+                }
+
+                <a class="ps-search-btn" href="#"><i class="ps-icon--search"></i></a>
+                <div class="btn-group ps-dropdown">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Language<i class="fa fa-angle-down"></i></a>
+                    <ul class="dropdown-menu">
+                        @{
+                            if (languages != null)
+                            {
+                                foreach (var language in languages)
+                                {
+                                    <li><a href="#">@language.Name</a></li>
+                                }
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

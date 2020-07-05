@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Http.Extensions
+@{
+    var url = @Context.Request.GetDisplayUrl();
+    string[] arrListUrl = url.Split('/');
+}
+<nav class="navigation">
+    <div class="container">
+        <div class="menu-toggle"><span></span></div>
+        <div class="navigation__left">
+            <ul class="menu menu--left">
+                <li class='@((arrListUrl[3]=="home"||arrListUrl[3]=="")?"current":"")'>
+                    <a href="/home">Home</a>
+                </li>
+                <li class='@(arrListUrl[3]=="about"?"current":"")'>
+                    <a href="/about">About</a>
+                </li>
+                <li class='@(arrListUrl[3]=="product"?"current":"")'>
+                    <a href="/product/index">Products</a>
+                </li>
+                @*<li class='@(arrListUrl[3]=="page"?"current":"")'>
+                    <a href="#">Pages</a>
+                </li>*@
+            </ul>
+        </div>
+        <a class="ps-logo" href="index.html">
+            <img src="@ViewData["Image-logo"]" alt="">
+        </a>
+        <div class="navigation__right">
+            <ul class="menu menu--right">
+                @*<li class='@(arrListUrl[3]=="gallery"?"current":"")'>
+                    <a href="#">Gallery</a>
+                </li>*@
+                <li class='@(arrListUrl[3]=="blog"?"current":"")'>
+                    <a href="/blog">Blogs</a>
+                </li>
+                <li class='@(arrListUrl[3]=="contact"?"current":"")'>
+                    <a href="/contact">Contact</a>
+                </li>
+            </ul>
+            <partial name="_Cart.cshtml">
+</div>
+       </div>
+
+</nav>

@@ -1,0 +1,284 @@
+﻿
+@model PageViewModel<ProductViewModel>;
+@{
+    var products = (List<ProductViewModel>)ViewData["products"];
+    var categories = (List<CategoryViewModel>)ViewData["categories"];
+    var minP = ViewData["minPrice"];
+    var maxP = ViewData["maxPrice"];
+    ViewData["Header"] = "header--2";
+    ViewData["Image-logo"] = "/assets/images/logo-2.png";
+
+    
+    var urlTemplate ="";
+    var request = ViewContext.HttpContext.Request;
+    int queryCount = request.Query.Keys.Count;
+    if (queryCount > 0)
+    {
+        if (request.Query.Keys.ElementAt(0) != "minPrice" || request.Query.Keys.ElementAt(0) != "maxPrice")
+        {
+            urlTemplate += request.Query.Keys.ElementAt(0) + "=" + request.Query[request.Query.Keys.ElementAt(0)];
+        }
+        for (int i = 1; i < queryCount; i++)
+        {
+            if (request.Query.Keys.ElementAt(i) == "minPrice" || request.Query.Keys.ElementAt(i) == "maxPrice")
+            {
+                continue;
+            }
+            if (request.Query[request.Query.Keys.ElementAt(i)].Count > 1)
+            {
+                foreach (var item in (string[])request.Query[request.Query.Keys.ElementAt(i)])
+                {
+                    urlTemplate += "&" + request.Query.Keys.ElementAt(i) + "=" + item;
+                }
+            }
+            else
+            {
+                urlTemplate += "&" + request.Query.Keys.ElementAt(i) + "=" + request.Query[request.Query.Keys.ElementAt(i)];
+            }
+
+        }
+        var x = urlTemplate;
+    }
+
+}
+
+<!-- Heros-->
+<div class="ps-section--hero">
+    <img src="/assets/images/hero/01.jpg" alt="">
+    <div class="ps-section__content text-center">
+        <h3 class="ps-section__title">OUR BAKERY</h3>
+        <div class="ps-breadcrumb">
+            <ol class="breadcrumb">
+                <li><a href="index.html">Home</a></li>
+                <li class="active">Shop</li>
+            </ol>
+        </div>
+    </div>
+</div>
+<div class="ps-section--page">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 col-lg-push-3 col-md-push-3">
+                <div class="ps-shop-grid pt-80">
+                    <div class="ps-shop-features">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <img class="mb-30" src="/assets/images/product-banner/012x.jpg" alt="">
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 ">
+                                <img class="mb-30" src="/assets/images/product-banner/022x.jpg" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ps-shop-filter">
+                        <div class="row">
+                            <div class="col-lg-5 col-md-4 col-sm-4 col-xs-12 ">
+                                <div class="form-group">
+                                    <label>Short by:</label>
+                                    <select class="ps-select" data-placeholder="Popupar product">
+                                        <option value="01">Popular products</option>
+                                        <option value="01">Item 01</option>
+                                        <option value="02">Item 02</option>
+                                        <option value="03">Item 03</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-md-4 col-sm-4 col-xs-12 ">
+                                <div class="form-group">
+                                    <label>Show:</label>
+                                    <select class="ps-select" data-placeholder="Show:">
+                                        <option value="01">SHOW</option>
+                                        <option value="02">Item 02</option>
+                                        <option value="03">Item 03</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12 ">
+                                <ul class="ps-shop-switch">
+                                    <li class="active"><a href="product-listing.html"><i class="fa fa-th"></i></a></li>
+                                    <li><a href="product-grid.html"><i class="fa fa-list"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ps-shop ps-col-tiny">
+                        <div class="row">
+                            @{
+                                if (products != null)
+                                {
+                                    foreach (var product in products)
+                                    {
+                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                            <div class="ps-product">
+                                                <div class="ps-product__thumbnail">
+                                                    <div class="ps-badge ps-badge--new"><span>New</span></div>
+                                                    <a class="ps-product__overlay" asp-action="detail" asp-controller="product" asp-route-productId="@product.Id"></a><img height="260" width="260" src="@product.ImagePath" alt="">
+                                                    <ul class="ps-product__action">
+                                                        <li><a class="popup-modal" href="#quickview-modal" data-effect="mfp-zoom-out" data-tooltip="View"><i class="ps-icon--search"></i></a></li>
+                                                        <li><a href="#" data-tooltip="Add to wishlist"><i class="ps-icon--heart"></i></a></li>
+                                                        <li><a href="#" data-tooltip="Compare"><i class="ps-icon--reload"></i></a></li>
+                                                        <li><a href="#" class="AddToCart" data-id="@product.Id" data-tooltip="Add to cart"><i class="ps-icon--shopping-cart"></i></a></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="ps-product__content">
+                                                    <a class="ps-product__title" asp-action="detail" asp-controller="product" asp-route-productId="@product.Id">@product.Name</a>
+                                                    <div class="ps-product__category">
+                                                        <a class="ps-product__category" href="product-listing.html">cupcake</a>
+                                                        <a class="ps-product__category" href="product-listing.html">sweet</a>
+                                                        <a class="ps-product__category" href="product-listing.html">bio</a>
+                                                    </div>
+                                                    <select class="ps-rating">
+                                                        <option value="1">1</option>
+                                                        <option value="1">2</option>
+                                                        <option value="1">3</option>
+                                                        <option value="1">4</option>
+                                                        <option value="5">5</option>
+                                                    </select>
+                                                    <p class="ps-product__price">@string.Format("{0:C}", product.Price)</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            }
+                        </div>
+                        @await Component.InvokeAsync("Pager", Model)
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 col-lg-pull-9 col-md-pull-9">
+                <div class="ps-sidebar">
+                    <aside class="ps-widget ps-widget--sidebar ps-widget--search">
+                        <form method="get" action="/product/index" id="findByKey">
+                            <input class="form-control" type="search" name="Name" id="Keyword" placeholder="Type here bakery name...">
+                            <button type="submit"><i class="ps-icon--search"></i></button>
+                        </form>
+                    </aside>
+                    <aside class="ps-widget ps-widget--sidebar ps-widget--category">
+                        <div class="ps-widget__header">
+                            <h3 class="ps-widget__title">CATEGORY   </h3>
+                        </div>
+                        <div class="ps-widget__content">
+                            <ul class="ps-list--circle">
+
+                                <li class='@(ViewBag.CategoryUrl=="index"?"current":"")'><a href="/product/index"><span class="circle"></span>All bakery</a></li>
+                                    @{
+                                        if (categories != null)
+                                        {
+                                            foreach (var category in categories)
+                                            {
+
+                                                <li class='@(ViewBag.CategoryUrl==@category.CategoryUrl?"current":"")'>
+                                                    <a href="/product/@category.CategoryUrl">
+                                                        <span class="circle"></span>@category.Name@(ViewBag.CategoryUrl == @category.CategoryUrl ? $"({products.Count()})" :"" )
+                                                    </a>
+                                                </li>
+                                            }
+                                        }
+
+                                    }
+                            </ul>
+                        </div>
+                    </aside>
+                    <aside class="ps-widget ps-widget--sidebar ps-widget--filter">
+                        <div class="ps-widget__header">
+                            <h3 class="ps-widget__title">Fillter Prices</h3>
+                        </div>
+                        <div class="ps-widget__content">
+                            <div class="ac-slider price" data-default-min="0" data-default-max="0" data-max="3450" data-step="50" data-unit="VND"></div>
+                            <p class="ac-slider__meta">Price:<span class="ac-slider__value ac-slider__min"></span>-<span class="ac-slider__value ac-slider__max"></span></p>
+                            <form method="post" action="/product/index" id="findByPrice">
+                                <button type="submit" class="ac-slider__filter ps-btn ps-btn--xs">Filter</button>
+                            </form>
+                        </div>
+                    </aside>
+                    <aside class="ps-widget ps-widget--sidebar ps-widget--ads">
+                        <div class="ps-widget__header">
+                            <h3 class="ps-widget__title">Ads Banner</h3>
+                        </div>
+                        <div class="ps-widget__content"><img src="/assets/images/widget/banner2x.png" alt=""></div>
+                    </aside>
+                    <aside class="ps-widget ps-widget--sidebar ps-widget--best-seller">
+                        <div class="ps-widget__header">
+                            <h3 class="ps-widget__title">Best seller</h3>
+                        </div>
+                        <div class="ps-widget__content">
+                            @{
+                                if (ViewBag.top != null)
+                                {
+                                    foreach (var product in ViewBag.top)
+                                    {
+                                        <div class="ps-product--sidebar">
+                                            <div class="ps-product__thumbnail"><a class="ps-product__overlay" asp-action="detail" asp-controller="product" asp-route-productId="@product.Id"></a><img src="@product.ImagePath" alt=""></div>
+                                            <div class="ps-product__content">
+                                                <h4 class="ps-product__title"><a asp-action="detail" asp-controller="product" asp-route-productId="@product.Id">@product.Name</a></h4>
+                                                <p class="ps-product__price">
+                                                    @string.Format("{0:C}", product.Price)
+                                                </p><a class="ps-btn ps-btn--xs" asp-action="detail" asp-controller="product" asp-route-productId="@product.Id">Purchase</a>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+
+                            }
+                     
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="../Shared/_Partner.cshtml">
+    <partial name="../Shared/_Subscribe.cshtml">
+        <partial name="../Shared/_Footer.cshtml">
+
+            @section Scripts{
+                <script>
+                            $(document).ready(function () {
+                                // set filter price
+                                $(".ac-slider__value.ac-slider__min").text(@minP);
+                                $(".ac-slider__value.ac-slider__max").text(@maxP);
+                                var maxPrice=$('.ac-slider.price').attr("data-max");
+                                var minPercent = @minP/parseInt(maxPrice)*100;
+                                var maxPercent = @maxP/parseInt(maxPrice)*100;
+                                var space = maxPercent - minPercent;
+                                $('.ac-slider.price').children().eq(0).css("left", `${minPercent}%`)
+                                    .css("width", `${space}%`);
+                                $('.ac-slider.price').children().eq(1).css("left", `${minPercent}%`);
+                                $('.ac-slider.price').children().eq(2).css("left", `${maxPercent}%`);
+                                $('.ac-slider.price').attr("data-default-min",@minP);
+                                $('.ac-slider.price').attr("data-default-max",@maxP);
+
+
+                                $("#findByPrice").submit(function (event) {
+                                    var minPrice = $(".ac-slider__value.ac-slider__min").text();
+                                    var maxPrice = $(".ac-slider__value.ac-slider__max").text();
+                                    var urlSearchPrice = `?minPrice=${minPrice.substring(1)}&maxPrice=${maxPrice.substring(1)}`;
+                                    urlSearchPrice += "&@urlTemplate";
+                                    $(this).attr("action", urlSearchPrice);
+                                });
+                            });
+                </script>
+                <script>
+                    $(document).ready(function () {
+                        $(".AddToCart").click(function (e) {
+                            e.preventDefault();
+                            var productId = $(this).attr("data-id");
+                            $.post("https://localhost:5002/cart/buy",
+                                {
+                                    Quantity: 1,
+                                    ProductID: productId,
+                                    CartId : "@ViewBag.CartId"
+                                },
+                                function (data, status) {
+                                    $.get("https://localhost:5002/cart/getcart",
+                                        function (data, status) {
+                                            $(".ps-cart").replaceWith(data);
+                                        });
+                                });
+                           
+                        });
+                    });
+                </script>
+            }
